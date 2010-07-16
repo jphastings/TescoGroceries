@@ -383,10 +383,20 @@ class Tesco
     end
   end
   
+  # Deals with the specifics of paginating products.
+  class Products < Paginated
+    private
+    def parse_items(res)
+      res['Products'].collect{|json|
+        Product.new(@api,json['ProductId'],json)
+      }
+    end
+  end
+  
   # A special class that takes care of product pagination automatically. It'll work like a read-only array for the most part
   # but you can request a specific page with #page and requesting a specific item with #[] will request the required page automatically
   # if it hasn't already been retrieved and stored within the instance's cache.
-  class Products
+  class Paginated
     attr_reader :length, :pages
     # Don't use this yourself!
     def initialize(api,res) # :nodoc:
@@ -402,12 +412,9 @@ class Tesco
     # Will return the item at the requested index, even if that page hasn't yet been retreived
     def [](n)
       raise TypeError, "That isn't a valid array reference" if not (n.is_a? Integer and n >= 0)
-      raise PaginationError, "That index exceeds the number of products" if n >= @length
-      page = (n / @perpage).floor + 1
-      if !@cached_pages.keys.include?(page)
-        parse(@api.api_request(nil,@params.merge({:page => page})))
-      end
-      @cached_pages[page][n - page * @perpage]
+      raise PaginationError, "That index exceeds the number of items" if n >= @length
+      page_num = (n / @perpage).floor + 1
+      page(page_num)[n - page_num * @perpage]
     end
     
     # Will return all the items on the requested page (indeces will be relative to the page).
@@ -417,7 +424,7 @@ class Tesco
       page = 0 if page == :all
       raise PaginationError, "That isn't a valid page reference" if not (page.is_a? Integer and page >= 0 and page <= @pages)
       if !@cached_pages.keys.include?(page)
-        parse(@api.api_request(nil,@params.merge({:page => page})))
+        @cached_pages[res['PageNumber'] || 1] = parse_items(@api.api_request(nil,@params.merge({:page => page})))
       end
       @cached_pages[page]
     end
@@ -453,11 +460,9 @@ class Tesco
     end
     
     private
-    def parse(res)
-      @cached_pages[res['PageNumber'] || 1] = res['Products'].collect{|json|
-        Product.new(@api,json['ProductId'],json)
-      }
-    end
+    # There's no parsing for the default pagination class, make a subclass and write your own parse method
+    # Take a look at #Products if you want to see how it's done.
+    def parse_items(res); res; end
   end
 
   class Offer

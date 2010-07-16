@@ -6,8 +6,8 @@
 # * Substitution with the basket
 # * Might need class for basket item
 
-require 'rubygems'
-require 'nestful'
+require 'net/http'
+require 'uri'
 require 'json'
 require 'time'
 require 'digest/md5'
@@ -42,9 +42,14 @@ class Tesco
   
   # Instantiates a tesco object with your developer and application keys
   def initialize(developer_key,application_key)
-    @endpoint = 'http://www.techfortesco.com/groceryapi_b1/RESTService.aspx'
+    @endpoint = URI.parse('http://www.techfortesco.com/groceryapi_b1/RESTService.aspx')
     @developer_key = developer_key
     @application_key = application_key
+  end
+  
+  # Sets the api endpoint as a URI object
+  def endpoint=(uri)
+    @endpoint = URI.parse(uri)
   end
   
   # Search Tesco's grocery product listing. Returns a list of Products in a special object that acts like a read-only array.
@@ -135,7 +140,7 @@ class Tesco
       :page => 1 # Will be overwritten by a page in params
     }.merge(params)
 
-    json = Nestful.get(@endpoint,:params => params)
+    json = Net::HTTP.get(@endpoint.host,@endpoint.path+"?"+params.collect { |k,v| "#{k}=#{URI::escape(v.to_s)}" }.join('&'))
 
     res = JSON::load(json)
     res[:requestparameters] = params

@@ -13,14 +13,44 @@ Everyone loves examples. You don't want to read through all the documentation to
 
 	require 'tesco'
 	
-	t = Tesco.new('dev_key','api_key')
+	t = Tesco::Groceries.new('dev_key','api_key')
 	
-	s = t.search("Chocolates")
 	# Returns a Products object (see below, it's basically a read-only array)
+	s = t.search("Chocolates")
 	
-	p s[0]
-	# => Tesco Milk Chocolate Big Buttons 170G
 	# Check out the Product class for more info about these badboys.
+	p milky = s[0]
+	# => Tesco Milk Chocolate Big Buttons 170G
+	
+	# Now you'll need to log in:
+	t.login('joebloggs@tesco.com','supersecret!')
+	
+	# This will return *the* instance (ie. calling it twice will give you the same object)
+	# of the basket for t's currently logged in user.
+	b = t.basket
+	
+	# You can arrange products in the basket like so:
+	b < milky # Push into the basket (or increment quantity)
+	b > milky # Completely remove from the basket
+	# b[milky] is now a 'BasketItem' Object, which you can use to alter amounts and the shopper note.
+	b[milky].quantity = 5 # Set a specific quantity
+	b[milky].note = "Please say \"I'm the Milky Bar Kid!\" as you pick it up. Please!"
+	
+	# Potentially counter-intuitive, request
+	
+	# There can only ever be one basket instance per logged in user:
+	b.object_id == t.basket.object_id # => true
+	
+	# But logging in as a new user won't bugger things up:
+	t.login('fredsmith@tesco.com','supersecreter!')
+	b2 = t.basket
+	b.customer_id  # => 1234
+	b2.customer_id # => 5678
+	
+	# And it'll make sure you're not going to bugger things up:
+	b > milky
+	# NotAuthenticatedError, Please reauthenticate as this basket's owner before attempting to modify it
+	
 	
 ### The Products Class
 As with most APIs that cover loads of information, the data is usually paginated. In order to make life simple I've designed this library so you don't have to worry about that at all. Paginated responses are 

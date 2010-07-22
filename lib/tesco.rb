@@ -4,7 +4,7 @@
 # = TODO
 # * Evaluate usefulness of the Department/Aisle/Shelf class division currently used
 # * Substitution with the basket?
-# * Might need class for basket item
+# * Add some useful barcode features, maybe allow lookup of products by barcode?
 
 require 'net/http'
 require 'uri'

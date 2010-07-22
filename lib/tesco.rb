@@ -1,5 +1,5 @@
 # == Tesco API
-# See the readme.md for examples and such.
+# See the readme for examples and such.
 # 
 # = TODO
 # * Evaluate usefulness of the Department/Aisle/Shelf class division currently used

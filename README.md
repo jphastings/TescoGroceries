@@ -1,11 +1,11 @@
-= Tesco Grocery API
+# Tesco Grocery API
 A seriously simple library for accessing the Tesco Grocery API.
 
-== Preparations
+## Preparations
 The first step here is to register (https://secure.techfortesco.com/tescoapiweb/) at the Tech for Tesco so you can use their Grocery API.
 Some of the calls (like working with baskets) will require non-anonymous login, so you may also want a Tesco account. They don't use any Oauth type stuff, you'll just need a username and password.
 
-== Examples
+## Examples
 
 Everyone loves examples. You don't want to read through all the documentation to get started!
 
@@ -50,10 +50,10 @@ Everyone loves examples. You don't want to read through all the documentation to
 	# NotAuthenticatedError, Please reauthenticate as this basket's owner before attempting to modify it
 	
 	
-=== The Products Class
+### The Products Class
 As with most APIs that cover loads of information, the data is usually paginated. In order to make life simple I've designed this library so you don't have to worry about that at all. Paginated responses are 
 
-=== Keeping up with Tesco API development	
+### Keeping up with Tesco API development	
 The default endpoint for the service is currently the  beta 1 (http://www.techfortesco.com/groceryapi_b1/RESTService.aspx). You can alter this after instantiating a Tesco object with:
 
 	t.endpoint = "http://another.tesco.api/testing"

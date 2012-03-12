@@ -157,7 +157,7 @@ module Tesco
         # TODO: Other status codes
       else
         p res
-        raise TescoApiError, "Unknown status code! Something went wrong — sorry"
+        raise TescoApiError, "Unknown status code! Something went wrong - sorry"
       end
     end
 

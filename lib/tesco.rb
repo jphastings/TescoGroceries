@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 # == Tesco API
 # See the readme for examples and such.
 # 
@@ -157,7 +159,7 @@ module Tesco
         # TODO: Other status codes
       else
         p res
-        raise TescoApiError, "Unknown status code! Something went wrong - sorry"
+        raise TescoApiError, "Unknown status code! Something went wrong - sorry"
       end
     end
 
